@@ -1,0 +1,14 @@
+
+        $data = $request->validate([
+            'name' => 'required|unique:categories,name',
+            'image' => 'required|file|mimes:jpeg,png,jpg,gif,heic|max:2048',
+        ]);
+
+        if (isset($request->image)) {
+            $image = time() . '.categories.' . $request->image->getClientOriginalExtension();
+            $destinationPath = public_path('images/categories');
+            $request->image->move($destinationPath, $image);
+        }
+        $data['image'] = $image;
+        Category::create($data);
+        return back()->with('success', 'Category added  successfully');
